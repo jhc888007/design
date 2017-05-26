@@ -19,8 +19,22 @@ protected:
 public:
     Duck() {};
     virtual void display() = 0;
+    void setFlyBehavior(FlyBehavior *fb) {
+        if (flyBehavior) {
+            delete flyBehavior;
+            flyBehavior = 0;
+        }
+        flyBehavior = fb;
+    }
     void performFly() { //为什么要进行封装？
         flyBehavior->fly(); //为什么这里具体行为不是类似于Behave一类的名称？
+    }
+    void setQuackBehavior(QuackBehavior *qb) {
+        if (quackBehavior) {
+            delete quackBehavior;
+            quackBehavior = 0;
+        }
+        quackBehavior = qb;
     }
     void performQuack() {
         quackBehavior->quack(); //为什么这里具体行为不是类似于Behave一类的名称？
@@ -65,9 +79,9 @@ public:
     }
 };
 
-class MiniDuckSimulator: public Duck {
+class MallardDuck: public Duck {
 public:
-    MiniDuckSimulator() {
+    MallardDuck() {
         flyBehavior = new FlyWithWings();
         quackBehavior = new Quack();
     }
@@ -76,12 +90,41 @@ public:
     }
 };
 
-int main() {
-    MiniDuckSimulator duck;
+void test1() {
+    MallardDuck duck;
     duck.display();
     duck.performQuack();
     duck.performFly();
     duck.swim();
+}
+
+class ModelDuck: public Duck {
+public:
+    ModelDuck() {
+        flyBehavior = new FlyNoWay();
+        quackBehavior = new Quack();
+    }
+    void display() {
+        cout << "Model duck show" << endl;
+    }
+};
+
+class FlyRocketPowered: public FlyBehavior {
+    void fly() {
+        cout << "Fly Rocket" << endl;
+    }
+};
+
+void test2() {
+    ModelDuck duck;
+    duck.performFly();
+    duck.setFlyBehavior(new FlyRocketPowered());
+    duck.performFly();
+}
+
+int main() {
+    test1();
+    test2();
 }
 
 
